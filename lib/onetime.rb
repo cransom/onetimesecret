@@ -49,6 +49,11 @@ module Onetime
       @locales = OT.load_locales
       @sysinfo ||= SysInfo.new.freeze
       @instance ||= [OT.sysinfo.hostname, OT.sysinfo.user, $$, OT::VERSION.to_s, OT.now.to_i].gibbler.freeze
+
+      OT.conf[:emailer][:user] = ENV.fetch('OT_SMTP_USER', OT.conf[:emailer][:user])
+      OT.conf[:emailer][:pass] = ENV.fetch('OT_SMTP_PASS', OT.conf[:emailer][:pass])
+      OT.conf[:site][:secret] = ENV.fetch('OT_SECRET', OT.conf[:site][:secret])
+
       OT::SMTP.setup
       @global_secret = OT.conf[:site][:secret] || "CHANGEME"
       Gibbler.secret = global_secret.freeze unless Gibbler.secret && Gibbler.secret.frozen?
